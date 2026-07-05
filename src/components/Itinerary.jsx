@@ -155,11 +155,11 @@ function TimeSlot({ slot, data, isLast }) {
       </div>
 
       {/* ── Activity content — indented under dot ── */}
-      <div className="ml-9">
+      <div className="ml-7 sm:ml-9">
         <h4 className="font-display text-olive text-[1.35rem] leading-snug mb-2.5">
           {data.activity}
         </h4>
-        <p className="text-olive/50 text-[13px] leading-[1.75] max-w-[46ch]">
+        <p className="text-olive/50 text-[13px] leading-[1.75]">
           {data.description}
         </p>
 
@@ -464,12 +464,9 @@ export default function Itinerary({ itinerary, isGenerating, chunkCount = 0, tra
                 {resolvedDestination || "Your trip"}
               </h2>
 
-              {/* AI summary — 2–3 lines */}
+              {/* AI summary */}
               {itinerary.balanceNote && (
-                <p
-                  className="text-olive/50 text-[13px] leading-[1.75] max-w-[38ch]"
-                  style={{ display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}
-                >
+                <p className="text-olive/50 text-[13px] leading-[1.75]">
                   {itinerary.balanceNote}
                 </p>
               )}
