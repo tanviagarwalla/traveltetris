@@ -51,7 +51,7 @@ export default function App() {
 
   const itineraryRef = useRef(null);
   const lastCardRef = useRef(null);
-  const showItinerary = isGenerating || itinerary !== null;
+  const showItinerary = isGenerating || itinerary !== null || !!apiError;
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -136,12 +136,11 @@ export default function App() {
       return;
     }
     setErrors(null); setApiError(null); setItinerary(null);
-    setChunkCount(0); setIsGenerating(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setChunkCount(0); setIsGenerating(true); setIsEditing(false);
+    setTimeout(() => itineraryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     try {
       const result = await generateItinerary(tripDetails, travellers, () => setChunkCount((n) => n + 1));
       setItinerary(result);
-      setIsEditing(false);
     } catch (err) {
       setApiError(err.message ?? "Something went wrong calling the Claude API.");
     } finally {
@@ -302,8 +301,9 @@ export default function App() {
                 )}
               </button>
 
+              {/* Error — desktop only, below generate button */}
               {apiError && (
-                <div className="bg-golden/10 border border-golden/25 rounded-2xl px-5 py-4 text-olive/70 text-sm leading-relaxed">
+                <div className="hidden lg:block bg-golden/10 border border-golden/25 rounded-2xl px-5 py-4 text-olive/70 text-sm leading-relaxed">
                   {apiError}
                 </div>
               )}
@@ -335,7 +335,20 @@ export default function App() {
                 </div>
               )}
 
-              {showItinerary && (
+              {/* Error — mobile: shown in right panel so it's visible when form is collapsed */}
+              {apiError && (
+                <div className="lg:hidden bg-golden/10 border border-golden/25 rounded-2xl px-5 py-5 text-olive/70 text-sm leading-relaxed">
+                  <p className="mb-4">{apiError}</p>
+                  <button
+                    onClick={() => { setIsEditing(true); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    className="text-xs text-olive font-medium border border-olive/20 rounded-full px-4 py-2 hover:border-olive/35 transition-colors"
+                  >
+                    ← Edit trip
+                  </button>
+                </div>
+              )}
+
+              {showItinerary && !apiError && (
                 <Itinerary
                   itinerary={itinerary}
                   isGenerating={isGenerating}
