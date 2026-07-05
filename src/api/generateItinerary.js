@@ -66,7 +66,7 @@ Reply with ONLY valid JSON — no markdown, no code fences. Schema:
   }
 }
 
-Produce exactly ${tripDetails.days} day object(s). destination field must be "${tripDetails.destination}". Where preferences conflict, find creative compromises.`;
+Produce exactly ${tripDetails.days} day object(s). destination field must be "${tripDetails.destination}". Where preferences conflict, find creative compromises.${tripDetails.days >= 7 ? " For this longer trip, keep each description to 1 sentence and each tips array to 2 items max to stay within output limits." : ""}`;
 }
 
 // Calls the /api/generate serverless function and streams the response back.
@@ -81,7 +81,7 @@ export async function generateItinerary(tripDetails, travellers, onProgress) {
   });
 
   if (!response.ok) {
-    throw new Error(`Generation failed: ${response.statusText}`);
+    throw new Error(`✈️ Something went wrong on our end (${response.statusText}). Try again in a moment!`);
   }
 
   const reader = response.body.getReader();
@@ -104,6 +104,12 @@ export async function generateItinerary(tripDetails, travellers, onProgress) {
   try {
     return JSON.parse(cleaned);
   } catch {
-    throw new Error("Claude returned an unexpected format. Please try again.");
+    if (cleaned.length === 0) {
+      throw new Error("✈️ Our travel planner went quiet — no response came back. Give it another go!");
+    }
+    if (!cleaned.endsWith("}")) {
+      throw new Error("🗺️ That's a long trip! The itinerary was too big to generate in one go. Try splitting it into shorter legs, or reduce the number of days.");
+    }
+    throw new Error("🧳 Something got scrambled on the way back. Try generating again — it usually works on the second attempt!");
   }
 }

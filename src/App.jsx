@@ -15,6 +15,7 @@ function validate(tripDetails, travellers) {
   const errors = { trip: {}, travellers: {} };
   if (!tripDetails.destination.trim()) errors.trip.destination = "Please enter a destination.";
   if (!tripDetails.days || tripDetails.days < 1) errors.trip.days = "Please enter at least 1 day.";
+  if (tripDetails.days > 16) errors.trip.days = "Maximum 16 days supported.";
   for (const t of travellers) {
     if (!t.name.trim()) errors.travellers[t.id] = { name: "Please enter this traveller's name." };
   }
@@ -302,7 +303,7 @@ export default function App() {
               </button>
 
               {apiError && (
-                <div className="bg-tomato/8 border border-tomato/15 rounded-2xl px-5 py-4 text-tomato text-sm">
+                <div className="bg-golden/10 border border-golden/25 rounded-2xl px-5 py-4 text-olive/70 text-sm leading-relaxed">
                   {apiError}
                 </div>
               )}

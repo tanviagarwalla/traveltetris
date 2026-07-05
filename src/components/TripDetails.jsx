@@ -40,7 +40,7 @@ export default function TripDetails({ tripDetails, onChange, errors = {} }) {
             <input
               type="number"
               min={1}
-              max={30}
+              max={16}
               value={tripDetails.days || ""}
               onChange={(e) => onChange({ ...tripDetails, days: e.target.value === "" ? 0 : Number(e.target.value) })}
               data-error={errors.days ? true : undefined}
