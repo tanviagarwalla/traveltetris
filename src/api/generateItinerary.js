@@ -43,7 +43,15 @@ function buildPrompt(tripDetails, travellers) {
 Group (${travellers.length} traveller(s)):
 ${travellerDescriptions}
 
-Reply with ONLY valid JSON — no markdown, no code fences. Schema:
+Important requirements:
+- Reply with ONLY valid JSON — no markdown, no code fences.
+- Produce exactly ${tripDetails.days} day object(s).
+- The destination field must be exactly "${tripDetails.destination}".
+- Where preferences conflict, find creative compromises.
+- budgetSummary.hotelSuggestions must contain 3-4 specific hotel or guesthouse names matching the group's budget, each formatted as "Hotel Name — one-line note", e.g. "Villa Dubrovnik — luxury clifftop hotel with sea views" or "Hostel One — sociable budget pick near the old town".
+${tripDetails.days >= 7 ? "- For this longer trip, keep each activity description to 1 sentence and each tips array to 2 items max.\n" : ""}
+
+JSON schema:
 
 {
   "destination": string,
@@ -51,9 +59,9 @@ Reply with ONLY valid JSON — no markdown, no code fences. Schema:
   "days": [{
     "dayNumber": number,
     "theme": string,
-    "morning":   { "activity": string, "description": string (1-2 sentences), "startTime": string, "durationHours": number, "tags": string[], "tips": string[] },
-    "afternoon": { "activity": string, "description": string (1-2 sentences), "startTime": string, "durationHours": number, "tags": string[], "tips": string[] },
-    "evening":   { "activity": string, "description": string (1-2 sentences), "startTime": string, "durationHours": number, "tags": string[], "tips": string[] },
+    "morning":   { "activity": string, "description": string, "startTime": string, "durationHours": number, "tags": string[], "tips": string[] },
+    "afternoon": { "activity": string, "description": string, "startTime": string, "durationHours": number, "tags": string[], "tips": string[] },
+    "evening":   { "activity": string, "description": string, "startTime": string, "durationHours": number, "tags": string[], "tips": string[] },
     "meals": { "breakfast": string, "lunch": string, "dinner": string },
     "practicalTips": string[]
   }],
@@ -62,11 +70,9 @@ Reply with ONLY valid JSON — no markdown, no code fences. Schema:
     "accommodation": string,
     "dining": string,
     "activities": string,
-    "suggestions": string[]
+    "hotelSuggestions": string[]
   }
-}
-
-Produce exactly ${tripDetails.days} day object(s). destination field must be "${tripDetails.destination}". Where preferences conflict, find creative compromises.${tripDetails.days >= 7 ? " For this longer trip, keep each description to 1 sentence and each tips array to 2 items max to stay within output limits." : ""}`;
+}`;
 }
 
 // Calls the /api/generate serverless function and streams the response back.

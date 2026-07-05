@@ -137,7 +137,13 @@ export default function App() {
     }
     setErrors(null); setApiError(null); setItinerary(null);
     setChunkCount(0); setIsGenerating(true); setIsEditing(false);
-    setTimeout(() => itineraryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    setTimeout(() => {
+      if (isMobile) {
+        itineraryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 100);
     try {
       const result = await generateItinerary(tripDetails, travellers, () => setChunkCount((n) => n + 1));
       setItinerary(result);

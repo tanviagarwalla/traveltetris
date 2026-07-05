@@ -284,11 +284,11 @@ function BudgetSummary({ budget }) {
             <span className="text-olive/80 leading-[1.7]">{value}</span>
           </div>
         ))}
-        {budget.suggestions?.length > 0 && (
+        {(budget.hotelSuggestions ?? budget.suggestions)?.length > 0 && (
           <div className="pt-4 border-t border-olive/8 mt-2">
             <p className="text-[9px] font-medium text-olive/28 uppercase tracking-[0.18em] mb-3">Where to stay</p>
             <ul className="space-y-2">
-              {budget.suggestions.map((s, i) => (
+              {(budget.hotelSuggestions ?? budget.suggestions).map((s, i) => (
                 <li key={i} className="text-[12px] text-olive/50 flex gap-2 leading-[1.6]">
                   <span className="text-olive/25 flex-shrink-0">›</span> {s}
                 </li>
